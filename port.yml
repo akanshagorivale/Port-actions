@@ -1,0 +1,10 @@
+- identifier: payment
+  title: Payment
+  blueprint: domain
+  properties:
+    architecture: https://lucid.app/documents/embedded/533f05ad-aa68-43ce-9499-c5f767dc8ea5
+- identifier: shipping
+  title: Shipping
+  blueprint: domain
+  properties:
+    architecture: https://lucid.app/documents/embedded/533f05ad-aa68-43ce-9499-c5f767dc8ea5
