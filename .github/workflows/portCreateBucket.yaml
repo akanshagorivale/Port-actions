@@ -18,37 +18,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 0.15.5
-
-      - name: Configure AWS credentials
-        run: |
-          mkdir -p ~/.aws
-          echo "[default]" > ~/.aws/credentials
-          echo "aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
-          echo "aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
-
       - name: Copy template file
         run: |
           mkdir -p ./resources
           cp templates/cloudResource.tf ./resources/${{ inputs.name }}.tf
-
       - name: Update new file data
         run: |
           sed -i 's/{{ bucket_name }}/${{ inputs.name }}/' ./resources/${{ inputs.name }}.tf
           sed -i 's/{{ bucket_acl }}/${{ inputs.visibility }}/' ./resources/${{ inputs.name }}.tf
-
-      - name: Initialize Terraform
-        run: terraform init
-
-      - name: Apply Terraform
-        run: terraform apply -auto-approve -var="bucket_name=${{ inputs.name }}" || echo "Terraform apply failed with exit code $?"
-        working-directory: ./resources  # Set the working directory for this step
-
-
       - name: Open a pull request
         uses: peter-evans/create-pull-request@v5
         with:
@@ -61,9 +38,7 @@ jobs:
           title: Create new resource - ${{ inputs.name }}
           body: |
             Create new ${{ inputs.visibility }} resource - ${{ inputs.name }}
-            Resource URL: ${{ steps.createResource.outputs.resource_url }}
           draft: false
-
 
   create-entity-in-port-and-update-run:
     runs-on: ubuntu-latest
