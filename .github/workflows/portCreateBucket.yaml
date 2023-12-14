@@ -31,16 +31,6 @@ jobs:
           echo "aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
           echo "aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
 
-      - name: Copy template file
-        run: |
-          mkdir -p ./resources
-          cp templates/cloudResource.tf ./resources/${{ inputs.name }}.tf
-
-      - name: Update new file data
-        run: |
-          sed -i 's/{{ bucket_name }}/${{ inputs.name }}/' ./resources/${{ inputs.name }}.tf
-          sed -i 's/{{ bucket_acl }}/${{ inputs.visibility }}/' ./resources/${{ inputs.name }}.tf
-
       - name: Initialize Terraform
         run: terraform init
 
@@ -72,7 +62,7 @@ jobs:
           blueprint: service
           properties: |-
             {
-              "resource_definitions": "${{ github.server_url }}/${{ github.repository_owner }}/${{fromJson(inputs.port_payload).context.entity}}/blob/main/resources/"
+              "resource_definitions": "${{ github.server_url }}/${{ github.repository_owner }}/${{fromJson(inputs.port_payload).context.entity}}/blob/main/cloudResource.tf"
             }
           clientId: ${{ secrets.PORT_CLIENT_ID }}
           clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
