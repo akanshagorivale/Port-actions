@@ -1,0 +1,79 @@
+name: Deploy CloudFormation - EC2 Instance
+
+on:
+  workflow_dispatch:
+    inputs:
+      instance_name:
+        required: true
+        type: string
+        description: instance name
+      instance_type:
+        required: true
+        type: string
+        description: instance type
+      image_id:
+        required: true
+        type: string
+        description: image id
+      key_pair_name:
+        required: true
+        type: string
+        description: key pair name
+      security_group_ids:
+        required: true
+        type: string
+        description: security group ids
+      port_payload:
+        required: true
+        description:
+          Port's payload, including details for who triggered the action and
+          general context (blueprint, run id, etc...)
+        type: string
+
+jobs:
+  deploy-cloudformation-template:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials 🔒
+        id: aws-credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to AWS CloudFormation
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: ${{ inputs.instance_name }}
+          template: ../templates/cloudFormation.yaml
+          parameter-overrides: >-
+            InstanceName=${{ inputs.instance_name }},
+            InstanceType=${{ inputs.instance_type }},
+            ImageId=${{ inputs.image_id }},
+            KeyPairName=${{ inputs.key_pair_name }},
+            SecurityGroupIds="${{ inputs.security_group_ids }}"
+
+      - name: UPSERT EC2 Instance Entity in Port
+        uses: port-labs/port-github-action@v1
+        with:
+          identifier: ${{ inputs.instance_name }}
+          title: ${{ inputs.instance_name }}
+          team: "[]"
+          icon: EC2
+          blueprint: ec2_instance
+          properties: |-
+            {
+              "instance_name": "${{ inputs.instance_name }}",
+              "instance_type": "${{ inputs.instance_type }}",
+              "image_id": "${{ inputs.image_id }}",
+              "key_pair_name": "${{ inputs.key_pair_name }}",
+              "security_group_ids": "${{ inputs.security_group_ids }}"
+            }
+          relations: "{}"
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: UPSERT
+          runId: ${{fromJson(inputs.port_payload).context.runId}}
