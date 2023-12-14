@@ -37,19 +37,15 @@ jobs:
       - name: Apply Terraform
         run: terraform apply -auto-approve -var="bucket_name=${{ inputs.name }}"
 
-      - name: Open a pull request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.ORG_ADMIN_TOKEN }}
-          commit-message: Create new resource - ${{ inputs.name }}
-          committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          branch: new-resource-${{ inputs.name }}
-          delete-branch: true
-          title: Create new resource - ${{ inputs.name }}
-          body: |
-            Create new ${{ inputs.visibility }} resource - ${{ inputs.name }}
-          draft: false
+      - name: Create pull request
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git checkout -b new-resource-${{ inputs.name }}
+          git add .
+          git commit -m "Create new resource - ${{ inputs.name }}"
+          git push origin new-resource-${{ inputs.name }}
+          gh pr create --base main --head new-resource-${{ inputs.name }} --title "Create new resource - ${{ inputs.name }}" --body "Create new ${{ inputs.visibility }} resource - ${{ inputs.name }}" --web
 
   create-entity-in-port-and-update-run:
     runs-on: ubuntu-latest
@@ -62,7 +58,7 @@ jobs:
           blueprint: service
           properties: |-
             {
-              "resource_definitions": "${{ github.server_url }}/${{ github.repository_owner }}/${{fromJson(inputs.port_payload).context.entity}}/blob/main/cloudResource.tf"
+              "resource_definitions": "${{ github.server_url }}/${{ github.repository_owner }}/${{fromJson(inputs.port_payload).context.entity}}/blob/main/resources/"
             }
           clientId: ${{ secrets.PORT_CLIENT_ID }}
           clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
