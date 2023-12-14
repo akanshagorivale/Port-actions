@@ -31,10 +31,6 @@ jobs:
           echo "aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
           echo "aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
 
-      - name: Configure working directory
-        run: cd $GITHUB_WORKSPACE
-        shell: bash
-
       - name: Copy template file
         run: |
           mkdir -p ./resources
@@ -50,7 +46,13 @@ jobs:
 
       - name: Apply Terraform
         run: terraform apply -auto-approve -var="bucket_name=${{ inputs.name }}" || echo "Terraform apply failed with exit code $?"
-        
+        working-directory: ./resources  # Set the working directory for this step
+
+      - name: Set Terraform Output
+        id: terraform-output
+        run: echo "::set-output name=resource_url::$(terraform output -raw resource_url)"
+        working-directory: ./resources  # Set the working directory for this step
+
       - name: Open a pull request
         uses: peter-evans/create-pull-request@v5
         with:
@@ -63,6 +65,7 @@ jobs:
           title: Create new resource - ${{ inputs.name }}
           body: |
             Create new ${{ inputs.visibility }} resource - ${{ inputs.name }}
+            Resource URL: ${{ steps.terraform-output.outputs.resource_url }}
           draft: false
 
   create-entity-in-port-and-update-run:
