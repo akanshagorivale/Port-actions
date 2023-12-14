@@ -48,10 +48,6 @@ jobs:
         run: terraform apply -auto-approve -var="bucket_name=${{ inputs.name }}" || echo "Terraform apply failed with exit code $?"
         working-directory: ./resources  # Set the working directory for this step
 
-      - name: Set Terraform Output
-        id: terraform-output
-        run: echo "::set-output name=resource_url::$(terraform output -raw resource_url)"
-        working-directory: ./resources  # Set the working directory for this step
 
       - name: Open a pull request
         uses: peter-evans/create-pull-request@v5
@@ -65,8 +61,9 @@ jobs:
           title: Create new resource - ${{ inputs.name }}
           body: |
             Create new ${{ inputs.visibility }} resource - ${{ inputs.name }}
-            Resource URL: ${{ steps.terraform-output.outputs.resource_url }}
+            Resource URL: ${{ steps.createResource.outputs.resource_url }}
           draft: false
+
 
   create-entity-in-port-and-update-run:
     runs-on: ubuntu-latest
