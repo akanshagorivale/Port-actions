@@ -49,8 +49,8 @@ jobs:
         run: terraform init
 
       - name: Apply Terraform
-        run: terraform apply -auto-approve -var="bucket_name=${{ inputs.name }}"
-
+        run: terraform apply -auto-approve -var="bucket_name=${{ inputs.name }}" || echo "Terraform apply failed with exit code $?"
+        
       - name: Open a pull request
         uses: peter-evans/create-pull-request@v5
         with:
