@@ -11,6 +11,9 @@ on:
         required: true
         description: Port's payload, including details for who triggered the action and general context
         type: string
+  pull_request:
+    types:
+      - closed
 
 jobs:
   createResource:
@@ -18,14 +21,30 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        run: |
+          mkdir -p ~/.aws
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
+          echo "aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+
       - name: Copy template file
         run: |
           mkdir -p ./resources
           cp templates/cloudResource.tf ./resources/${{ inputs.name }}.tf
+
       - name: Update new file data
         run: |
           sed -i 's/{{ bucket_name }}/${{ inputs.name }}/' ./resources/${{ inputs.name }}.tf
           sed -i 's/{{ bucket_acl }}/${{ inputs.visibility }}/' ./resources/${{ inputs.name }}.tf
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Apply Terraform
+        run: terraform apply -auto-approve -var="bucket_name=${{ inputs.name }}"
+
       - name: Open a pull request
         uses: peter-evans/create-pull-request@v5
         with:
@@ -57,6 +76,7 @@ jobs:
           clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
           operation: UPSERT
           runId: ${{fromJson(inputs.port_payload).context.runId}}
+
       - name: Create a log message
         uses: port-labs/port-github-action@v1
         with:
