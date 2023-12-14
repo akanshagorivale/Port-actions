@@ -34,6 +34,12 @@ jobs:
           mkdir -p ./resources
           cp templates/cloudResource.tf ./resources/${{ inputs.name }}.tf
 
+      - name: Debug file structure
+        run: |
+          ls -R
+          cat ./resources/${{ inputs.name }}.tf
+
+
       - name: Update new file data
         run: |
           sed -i 's/{{ bucket_name }}/${{ inputs.name }}/' ./resources/${{ inputs.name }}.tf
