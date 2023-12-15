@@ -15,10 +15,6 @@ on:
         required: true
         type: string
         description: image id
-      key_pair_name:
-        required: true
-        type: string
-        description: key pair name
       security_group_ids:
         required: true
         type: string
@@ -63,7 +59,6 @@ jobs:
             InstanceName=${{ inputs.instance_name }},
             InstanceType=${{ inputs.instance_type }},
             ImageId=${{ inputs.image_id }},
-            KeyPairName=${{ inputs.key_pair_name }},
             SecurityGroupIds="${{ inputs.security_group_ids }}",
             SubnetId="${{ inputs.subnet_id }}"
 
@@ -80,7 +75,6 @@ jobs:
               "instance_name": "${{ inputs.instance_name }}",
               "instance_type": "${{ inputs.instance_type }}",
               "image_id": "${{ inputs.image_id }}",
-              "key_pair_name": "${{ inputs.key_pair_name }}",
               "security_group_ids": "${{ inputs.security_group_ids }}",
               "subnet_id": "${{ inputs.subnet_id }}"
             }
