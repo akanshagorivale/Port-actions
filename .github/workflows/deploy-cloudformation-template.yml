@@ -51,6 +51,9 @@ jobs:
       - name: List contents of templates directory
         run: ls -R ./templates
 
+      - name: List key pairs
+        run: aws ec2 describe-key-pairs --region ${{ secrets.AWS_REGION }}
+
       - name: Deploy to AWS CloudFormation
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
