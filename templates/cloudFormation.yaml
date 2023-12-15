@@ -38,10 +38,6 @@ Parameters:
     Type: List<AWS::EC2::SecurityGroup::Id>
     ConstraintDescription: Must be a list of valid Security Group IDs
 
-  VpcId:
-    Type: AWS::EC2::VPC::Id
-    Description: VPC ID where the EC2 instance should be launched
-
   SubnetId:
     Type: AWS::EC2::Subnet::Id
     Description: Subnet ID where the EC2 instance should be launched
