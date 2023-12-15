@@ -74,7 +74,7 @@ jobs:
               "image_id": "${{ inputs.image_id }}",
               "security_group_ids": "${{ inputs.security_group_ids }}",
               "subnet_id": "${{ inputs.subnet_id }}",
-              "key_pair_name": ${{ secrets.AWS_EC2_KEY_PAIR }}
+              "key_pair_name": "${{ secrets.AWS_EC2_KEY_PAIR }}"
             }
           relations: "{}"
           clientId: ${{ secrets.PORT_CLIENT_ID }}
