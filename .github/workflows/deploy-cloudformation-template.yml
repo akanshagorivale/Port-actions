@@ -52,7 +52,7 @@ jobs:
         run: ls -R ./templates
 
       - name: List key pairs
-        run: aws ec2 describe-key-pairs --region ${{ secrets.AWS_REGION }}
+        run: aws ec2 describe-key-pairs --region ap-southeast-1
 
       - name: Deploy to AWS CloudFormation
         uses: aws-actions/aws-cloudformation-github-deploy@v1
