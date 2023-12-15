@@ -62,8 +62,7 @@ jobs:
             ImageId=${{ inputs.image_id }},
             KeyPairName=${{ inputs.key_pair_name }},
             SecurityGroupIds="${{ inputs.security_group_ids }}",
-            SubnetId="${{ inputs.subnet_id }}",
-            VpcId="${{ inputs.vpc_id }}"
+            SubnetId="${{ inputs.subnet_id }}"
 
       - name: UPSERT EC2 Instance Entity in Port
         uses: port-labs/port-github-action@v1
