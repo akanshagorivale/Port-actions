@@ -45,7 +45,7 @@ Resources:
     Properties:
       InstanceType: !Ref InstanceType
       ImageId: !Ref ImageId
-      KeyName: aws-key-pair
+      KeyName: ${{ secrets.AWS_EC2_KEY_PAIR }}
       SecurityGroupIds: !Ref SecurityGroupIds
       SubnetId: !Ref SubnetId
       Tags:
