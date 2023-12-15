@@ -23,6 +23,10 @@ on:
         required: true
         type: string
         description: security group ids
+      subnet_id:
+        required: true
+        type: string
+        description: subnet id
       port_payload:
         required: true
         description:
