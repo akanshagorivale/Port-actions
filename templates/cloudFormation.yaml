@@ -56,7 +56,6 @@ Resources:
       KeyName: !Ref KeyPairName
       SecurityGroupIds: !Ref SecurityGroupIds
       SubnetId: !Ref SubnetId
-      VpcId: !Ref VpcId
       Tags:
         - Key: Name
           Value: !Ref InstanceName
