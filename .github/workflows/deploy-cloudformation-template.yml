@@ -27,6 +27,10 @@ on:
         required: true
         type: string
         description: subnet id
+      vpc_id:
+        required: true
+        type: string
+        description: vpc id
       port_payload:
         required: true
         description:
