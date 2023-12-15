@@ -36,10 +36,6 @@ Parameters:
     Description: Subnet ID where the EC2 instance should be launched
 
 Resources:
-  KeyPair:
-    Type: AWS::EC2::KeyPair
-    Properties:
-      KeyName: ec2-instance-key-pair
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
