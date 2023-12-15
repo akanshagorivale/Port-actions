@@ -46,7 +46,7 @@ Resources:
   KeyPair:
     Type: AWS::EC2::KeyPair
     Properties:
-      KeyName: aws-key-pair
+      KeyName: ec2-instance-key-pair
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
