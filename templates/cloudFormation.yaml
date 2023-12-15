@@ -26,13 +26,6 @@ Parameters:
     Type: AWS::EC2::Image::Id
     ConstraintDescription: Must be a valid AMI ID
 
-  KeyPairName:
-    Description: Name of the key pair for SSH access
-    Type: String
-    MinLength: 1
-    MaxLength: 255
-    ConstraintDescription: Key pair name must not be empty
-
   SecurityGroupIds:
     Description: List of Security Group IDs for the EC2 instance
     Type: List<AWS::EC2::SecurityGroup::Id>
@@ -52,7 +45,7 @@ Resources:
     Properties:
       InstanceType: !Ref InstanceType
       ImageId: !Ref ImageId
-      KeyName: !Ref KeyPairName
+      KeyName: aws-key-pair
       SecurityGroupIds: !Ref SecurityGroupIds
       SubnetId: !Ref SubnetId
       Tags:
