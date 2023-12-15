@@ -27,10 +27,6 @@ on:
         required: true
         type: string
         description: subnet id
-      vpc_id:
-        required: true
-        type: string
-        description: vpc id
       port_payload:
         required: true
         description:
@@ -84,8 +80,7 @@ jobs:
               "image_id": "${{ inputs.image_id }}",
               "key_pair_name": "${{ inputs.key_pair_name }}",
               "security_group_ids": "${{ inputs.security_group_ids }}",
-              "subnet_id": "${{ inputs.subnet_id }}",
-              "vpc_id": "${{ inputs.vpc_id }}"
+              "subnet_id": "${{ inputs.subnet_id }}"
             }
           relations: "{}"
           clientId: ${{ secrets.PORT_CLIENT_ID }}
