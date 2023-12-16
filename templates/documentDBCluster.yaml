@@ -17,6 +17,15 @@ Parameters:
     MaxValue: 10
     ConstraintDescription: Instance count must be between 1 and 10.
 
+  SecurityGroupIds:
+    Description: List of Security Group IDs for the EC2 instance
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    ConstraintDescription: Must be a list of valid Security Group IDs
+
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: Subnet ID where the EC2 instance should be launched
+
 Resources:
   DocumentDBCluster:
     Type: "AWS::DocDB::DBCluster"
@@ -26,6 +35,8 @@ Resources:
       MasterUsername: admin
       MasterUserPassword: adminadmin
       AvailabilityZones: !GetAZs ""
+      SecurityGroupIds: !Ref SecurityGroupIds
+      SubnetId: !Ref SubnetId
 
 Outputs:
   DocumentDBClusterIdentifier:
