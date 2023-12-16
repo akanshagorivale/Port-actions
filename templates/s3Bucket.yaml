@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation Template for an S3 Bucket
+
+Parameters:
+  BucketName:
+    Description: Name for the S3 bucket
+    Type: String
+    MinLength: 3
+    MaxLength: 63
+    ConstraintDescription: The bucket name must be between 3 and 63 characters.
+
+  BucketAcl:
+    Description: Access control for the S3 bucket
+    Type: String
+    Default: Private
+    AllowedValues:
+      - Private
+      - PublicRead
+      - PublicReadWrite
+      - AuthenticatedRead
+    ConstraintDescription: Choose a valid access control option.
+
+Resources:
+  S3Bucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: !Ref BucketAcl
+
+Outputs:
+  S3BucketName:
+    Description: Name of the created S3 bucket
+    Value: !Ref S3Bucket
