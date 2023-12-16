@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: CloudFormation Template for ECS Cluster
+Description: CloudFormation Template for an ECS Cluster with EC2 Instance
 
 Parameters:
   ClusterName:
@@ -9,14 +9,36 @@ Parameters:
     MaxLength: 255
     ConstraintDescription: The cluster name must be between 1 and 255 characters.
 
+  InstanceType:
+    Description: EC2 instance type
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t2.medium
+    ConstraintDescription: Must be a valid EC2 instance type
+
 Resources:
   ECSCluster:
     Type: "AWS::ECS::Cluster"
     Properties:
       ClusterName: !Ref ClusterName
 
-Outputs:
-  ECSClusterName:
-    Description: Name of the created ECS cluster
-    Value: !Ref ECSCluster
+  EC2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: "ami-0c55b159cbfafe1f0"  # Amazon Linux 2 AMI, replace with your desired AMI
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          echo ECS_CLUSTER=${ClusterName} >> /etc/ecs/ecs.config
+      Tags:
+        - Key: Name
+          Value: !Ref ClusterName
 
+Outputs:
+  ECSInstanceID:
+    Description: ID of the created EC2 instance
+    Value: !Ref EC2Instance
