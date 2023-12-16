@@ -19,6 +19,20 @@ Parameters:
       - t2.medium
     ConstraintDescription: Must be a valid EC2 instance type
 
+  ImageId:
+    Description: ID of the Amazon Machine Image (AMI) to use
+    Type: AWS::EC2::Image::Id
+    ConstraintDescription: Must be a valid AMI ID
+
+  SecurityGroupIds:
+    Description: List of Security Group IDs for the EC2 instance
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    ConstraintDescription: Must be a list of valid Security Group IDs
+
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: Subnet ID where the EC2 instance should be launched
+
 Resources:
   ECSCluster:
     Type: "AWS::ECS::Cluster"
@@ -29,7 +43,10 @@ Resources:
     Type: "AWS::EC2::Instance"
     Properties:
       InstanceType: !Ref InstanceType
-      ImageId: "ami-05d1dd0175a5c3b99"  # Amazon Linux 2 AMI, replace with your desired AMI
+      ImageId: !Ref ImageId  # Amazon Linux 2 AMI, replace with your desired AMI
+      KeyName: !Ref KeyPairName
+      SecurityGroupIds: !Ref SecurityGroupIds
+      SubnetId: !Ref SubnetId
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
