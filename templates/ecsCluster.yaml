@@ -29,7 +29,7 @@ Resources:
     Type: "AWS::EC2::Instance"
     Properties:
       InstanceType: !Ref InstanceType
-      ImageId: "ami-0c55b159cbfafe1f0"  # Amazon Linux 2 AMI, replace with your desired AMI
+      ImageId: "ami-05d1dd0175a5c3b99"  # Amazon Linux 2 AMI, replace with your desired AMI
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
