@@ -1,0 +1,26 @@
+name: Deploy S3 Bucket
+
+on:
+  workflow_dispatch:
+    inputs:
+      bucket_name:
+        required: true
+        type: string
+        description: S3 bucket name
+
+jobs:
+  deploy-s3-bucket:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy S3 Bucket
+        run: aws cloudformation deploy --template-file path/to/s3Bucket.yaml --stack-name MyS3BucketStack --parameter-overrides BucketName=${{ inputs.bucket_name }}
