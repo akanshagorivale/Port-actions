@@ -17,16 +17,17 @@ Parameters:
     MaxValue: 10
     ConstraintDescription: Instance count must be between 1 and 10.
 
-  SecurityGroupIds:
-    Description: List of Security Group IDs for the EC2 instance
-    Type: List<AWS::EC2::SecurityGroup::Id>
-    ConstraintDescription: Must be a list of valid Security Group IDs
-
-  SubnetId:
-    Type: AWS::EC2::Subnet::Id
-    Description: Subnet ID where the EC2 instance should be launched
-
 Resources:
+  DocumentDBSubnetGroup:
+    Type: "AWS::DocDB::DBSubnetGroup"
+    Properties:
+      DBSubnetGroupName: DocDBSubnetGroup
+      SubnetIds:
+        - subnet-05dc13506a5563adc  # Specify the IDs of your subnets
+        - subnet-0db9b3b2deabbfb0a
+        # Add more subnet IDs as needed
+      DBSubnetGroupDescription: Subnet group for DocumentDB
+      
   DocumentDBCluster:
     Type: "AWS::DocDB::DBCluster"
     Properties:
@@ -34,9 +35,12 @@ Resources:
       EngineVersion: "4.0"
       MasterUsername: admin
       MasterUserPassword: adminadmin
-      AvailabilityZones: !GetAZs ""
-      SecurityGroupIds: !Ref SecurityGroupIds
-      SubnetId: !Ref SubnetId
+      DBSubnetGroupName: !Ref DocumentDBSubnetGroup
+      VpcSecurityGroupIds:
+        - sg-0308df5e08a2aa143  # Specify the appropriate security group ID
+      AvailabilityZones:
+        - ap-southeast-1a
+        - ap-southeast-1b
 
 Outputs:
   DocumentDBClusterIdentifier:
