@@ -1,0 +1,10 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Parameter Store Stack
+
+Resources:
+  MyParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /MyApp/MyParameter
+      Type: String
+      Value: "MyParameterValue"
