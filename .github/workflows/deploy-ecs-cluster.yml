@@ -7,6 +7,18 @@ on:
         required: true
         type: string
         description: ECS cluster name
+      image_id:
+        required: true
+        type: string
+        description: image id
+      security_group_ids:
+        required: true
+        type: string
+        description: security group ids
+      subnet_id:
+        required: true
+        type: string
+        description: subnet id
       port_payload:
         required: true
         description: Port's payload, including details for who triggered the action and general context (blueprint, run id, etc...)
@@ -32,7 +44,10 @@ jobs:
           name: ${{ inputs.cluster_name }}
           template: ./templates/ecsCluster.yaml
           parameter-overrides: >-
-            ClusterName=${{ inputs.cluster_name }}
+            ClusterName=${{ inputs.cluster_name }},
+            ImageId=${{ inputs.image_id }},
+            SecurityGroupIds="${{ inputs.security_group_ids }}",
+            SubnetId="${{ inputs.subnet_id }}"
 
       - name: UPSERT ECS Cluster Entity in Port
         uses: port-labs/port-github-action@v1
@@ -44,7 +59,11 @@ jobs:
           blueprint: ecs_cluster
           properties: |-
             {
-              "cluster_name": "${{ inputs.cluster_name }}"
+              "cluster_name": "${{ inputs.cluster_name }}",
+              "image_id": "${{ inputs.image_id }}",
+              "security_group_ids": "${{ inputs.security_group_ids }}",
+              "subnet_id": "${{ inputs.subnet_id }}",
+              "key_pair_name": "${{ inputs.key_pair_name }}"
             }
           relations: "{}"
           clientId: ${{ secrets.PORT_CLIENT_ID }}
