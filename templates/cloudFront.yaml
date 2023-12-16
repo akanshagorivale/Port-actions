@@ -1,0 +1,13 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFront Stack
+
+Resources:
+  MyCloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: "example.com"
+            Id: "MyOrigin"
+        DefaultRootObject: "index.html"
+        Enabled: true
