@@ -44,7 +44,7 @@ Resources:
     Properties:
       InstanceType: !Ref InstanceType
       ImageId: !Ref ImageId  # Amazon Linux 2 AMI, replace with your desired AMI
-      KeyName: !Ref KeyPairName
+      KeyName: node-key-pair
       SecurityGroupIds: !Ref SecurityGroupIds
       SubnetId: !Ref SubnetId
       UserData:
