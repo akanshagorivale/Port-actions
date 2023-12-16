@@ -39,32 +39,32 @@ Resources:
     Properties:
       ClusterName: !Ref ClusterName
 
-  EC2Instance:
-    Type: "AWS::EC2::Instance"
+  LaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      InstanceType: !Ref InstanceType
       ImageId: !Ref ImageId  # Amazon Linux 2 AMI, replace with your desired AMI
-      KeyName: node-key-pair
-      SecurityGroupIds: !Ref SecurityGroupIds
-      SubnetId: !Ref SubnetId
+      InstanceType: !Ref InstanceType
+      KeyName: node-key-pair  # Specify the key pair name
+      SecurityGroups: !Ref SecurityGroupIds
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
           echo ECS_CLUSTER=${ClusterName} >> /etc/ecs/ecs.config
-      Tags:
-        - Key: Name
-          Value: !Ref ClusterName
 
-  EC2ContainerInstance:
-    Type: AWS::ECS::ContainerInstance
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      Cluster: !Ref ECSCluster
-      InstanceType: !Ref InstanceType
+      AutoScalingGroupName: EC2AutoScalingGroup
+      LaunchConfigurationName: !Ref LaunchConfiguration
+      MinSize: 1
+      MaxSize: 3  # Specify the desired min and max instances
+      DesiredCapacity: 2
+      VPCZoneIdentifier: !Ref SubnetId
 
 Outputs:
   ECSClusterName:
     Description: Name of the created ECS cluster
     Value: !Ref ECSCluster
-  EC2InstanceID:
-    Description: ID of the created EC2 instance
-    Value: !Ref EC2Instance
+  ECSAutoScalingGroup:
+    Description: Auto Scaling Group for ECS Cluster
+    Value: !Ref AutoScalingGroup
