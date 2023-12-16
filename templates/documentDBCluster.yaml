@@ -17,6 +17,21 @@ Parameters:
     MaxValue: 10
     ConstraintDescription: Instance count must be between 1 and 10.
 
+  MasterUsername:
+    Description: Master username for the DocumentDB cluster
+    Type: String
+    MinLength: 1
+    MaxLength: 63
+    Default: myadminuser
+    ConstraintDescription: The master username must be between 1 and 63 characters.
+
+  MasterUserPassword:
+    Description: Master user password for the DocumentDB cluster
+    Type: String
+    MinLength: 1
+    NoEcho: true
+    ConstraintDescription: The password must be at least 1 character long.
+
 Resources:
   DocumentDBSubnetGroup:
     Type: "AWS::DocDB::DBSubnetGroup"
@@ -33,14 +48,16 @@ Resources:
     Properties:
       DBClusterIdentifier: !Ref ClusterName
       EngineVersion: "4.0"
-      MasterUsername: admin
-      MasterUserPassword: adminadmin
+      MasterUsername: !Ref MasterUsername
+      MasterUserPassword: !Ref MasterUserPassword
       DBSubnetGroupName: !Ref DocumentDBSubnetGroup
       VpcSecurityGroupIds:
         - sg-0308df5e08a2aa143  # Specify the appropriate security group ID
       AvailabilityZones:
         - ap-southeast-1a
         - ap-southeast-1b
+      BackupRetentionPeriod: 7  # Update with your desired backup retention period
+      StorageEncrypted: true
 
 Outputs:
   DocumentDBClusterIdentifier:
