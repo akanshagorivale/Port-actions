@@ -68,7 +68,7 @@ Resources:
   DocumentDBInstance:
     Type: "AWS::DocDB::DBInstance"
     Properties:
-      DBClusterIdentifier: !Ref DocumentDBCluster
+      DBClusterIdentifier: !Ref ClusterName
       DBInstanceClass: !Ref DBInstanceClass
       AutoMinorVersionUpgrade: true
       
