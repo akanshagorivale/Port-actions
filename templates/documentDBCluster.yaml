@@ -58,12 +58,11 @@ Resources:
       BackupRetentionPeriod: 7  # Update with your desired backup retention period
       StorageEncrypted: true
 
-  DocDBInstance:
+  DocumentDBInstance:
     Type: "AWS::DocDB::DBInstance"
     Properties:
       DBClusterIdentifier: !Ref DocumentDBCluster
       AutoMinorVersionUpgrade: true
-      AvailabilityZone: !Select [0, !Ref SubnetIds]
       
 Outputs:
   DocumentDBClusterIdentifier:
