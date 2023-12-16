@@ -9,13 +9,12 @@ Parameters:
     MaxLength: 255
     ConstraintDescription: The cluster name must be between 1 and 255 characters.
 
-  InstanceCount:
-    Description: Number of DocumentDB instances
-    Type: Number
+  NumberOfInstances:
+    Description: "Number of instances in the DocumentDB cluster"
+    Type: "Number"
     Default: 1
     MinValue: 1
     MaxValue: 10
-    ConstraintDescription: Instance count must be between 1 and 10.
 
   MasterUsername:
     Description: Master username for the DocumentDB cluster
@@ -58,6 +57,7 @@ Resources:
         - ap-southeast-1b
       BackupRetentionPeriod: 7  # Update with your desired backup retention period
       StorageEncrypted: true
+      NumberOfInstances: !Ref NumberOfInstances
 
 Outputs:
   DocumentDBClusterIdentifier:
