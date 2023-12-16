@@ -11,7 +11,14 @@ on:
         required: true
         type: number
         description: Number of DocumentDB instances
-      
+      master_username:
+        required: true
+        type: string
+        description: DocumentDB cluster name
+      master_user_password:
+        required: true
+        type: string
+        description: DocumentDB cluster name
       port_payload:
         required: true
         description: Port's payload, including details for who triggered the action and general context (blueprint, run id, etc...)
@@ -38,7 +45,9 @@ jobs:
           template: ./templates/documentDBCluster.yaml
           parameter-overrides: >-
             ClusterName=${{ inputs.cluster_name }},
-            InstanceCount=${{ inputs.instance_count }}
+            InstanceCount=${{ inputs.instance_count }},
+            MasterUsername=${{ inputs.master_username }},
+            MasterUserPassword=${{ inputs.master_user_password }}
 
       - name: UPSERT DocumentDB Cluster Entity in Port
         uses: port-labs/port-github-action@v1
@@ -51,7 +60,9 @@ jobs:
           properties: |-
             {
               "cluster_name": "${{ inputs.cluster_name }}",
-              "instance_count": "${{ inputs.instance_count }}"
+              "instance_count": "${{ inputs.instance_count }}",
+              "master_username": "${{ inputs.master_username }}",
+              "master_user_password": "${{ inputs.master_user_password }}"
             }
           relations: "{}"
           clientId: ${{ secrets.PORT_CLIENT_ID }}
