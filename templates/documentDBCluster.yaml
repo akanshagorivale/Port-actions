@@ -31,6 +31,13 @@ Parameters:
     NoEcho: true
     ConstraintDescription: The password must be at least 1 character long.
 
+  DBInstanceClass:
+    Description: "Instance Class of the DocumentDB cluster"
+    Type: String
+    MinLength: 1
+    MaxLength: 80
+    ConstraintDescription: The cluster instance must be between 1 and 80 characters.
+
 Resources:
   DocumentDBSubnetGroup:
     Type: "AWS::DocDB::DBSubnetGroup"
@@ -49,6 +56,8 @@ Resources:
       EngineVersion: "4.0"
       MasterUsername: !Ref MasterUsername
       MasterUserPassword: !Ref MasterUserPassword
+      DBInstanceClass: !Ref DBInstanceClass
+      NumberOfInstances: !Ref NumberOfInstances
       DBSubnetGroupName: !Ref DocumentDBSubnetGroup
       VpcSecurityGroupIds:
         - sg-0308df5e08a2aa143  # Specify the appropriate security group ID
