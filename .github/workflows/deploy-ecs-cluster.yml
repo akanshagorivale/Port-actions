@@ -1,0 +1,54 @@
+name: Deploy ECS Cluster
+
+on:
+  workflow_dispatch:
+    inputs:
+      cluster_name:
+        required: true
+        type: string
+        description: ECS cluster name
+      port_payload:
+        required: true
+        description: Port's payload, including details for who triggered the action and general context (blueprint, run id, etc...)
+        type: string
+
+jobs:
+  deploy-cloudformation-template:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials 🔒
+        id: aws-credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to AWS CloudFormation
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: ${{ inputs.cluster_name }}
+          template: ./templates/ecsCluster.yaml
+          parameter-overrides: >-
+            ClusterName=${{ inputs.cluster_name }}
+
+      - name: UPSERT ECS Cluster Entity in Port
+        uses: port-labs/port-github-action@v1
+        with:
+          identifier: ${{ inputs.cluster_name }}
+          title: ${{ inputs.cluster_name }}
+          team: "[]"
+          icon: ECS
+          blueprint: ecs_cluster
+          properties: |-
+            {
+              "cluster_name": "${{ inputs.cluster_name }}"
+            }
+          relations: "{}"
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: UPSERT
+          runId: ${{fromJson(inputs.port_payload).context.runId}}
+

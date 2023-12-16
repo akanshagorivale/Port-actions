@@ -1,0 +1,72 @@
+name: Deploy Lambda Function
+
+on:
+  workflow_dispatch:
+    inputs:
+      function_name:
+        required: true
+        type: string
+        description: Lambda function name
+      runtime:
+        required: true
+        type: string
+        description: Lambda function runtime
+      handler:
+        required: true
+        type: string
+        description: Lambda function handler
+      role_arn:
+        required: true
+        type: string
+        description: ARN of the Lambda execution role
+      port_payload:
+        required: true
+        description: Port's payload, including details for who triggered the action and general context (blueprint, run id, etc...)
+        type: string
+
+jobs:
+  deploy-cloudformation-template:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials 🔒
+        id: aws-credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to AWS CloudFormation
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: ${{ inputs.function_name }}
+          template: ./templates/lambdaFunction.yaml
+          parameter-overrides: >-
+            FunctionName=${{ inputs.function_name }},
+            Runtime=${{ inputs.runtime }},
+            Handler=${{ inputs.handler }},
+            RoleArn=${{ inputs.role_arn }}
+
+      - name: UPSERT Lambda Function Entity in Port
+        uses: port-labs/port-github-action@v1
+        with:
+          identifier: ${{ inputs.function_name }}
+          title: ${{ inputs.function_name }}
+          team: "[]"
+          icon: Lambda
+          blueprint: lambda_function
+          properties: |-
+            {
+              "function_name": "${{ inputs.function_name }}",
+              "runtime": "${{ inputs.runtime }}",
+              "handler": "${{ inputs.handler }}",
+              "role_arn": "${{ inputs.role_arn }}"
+            }
+          relations: "{}"
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: UPSERT
+          runId: ${{fromJson(inputs.port_payload).context.runId}}
+
