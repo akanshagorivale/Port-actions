@@ -36,7 +36,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: ${{ inputs.bucket_name }}
-          template: <CF_TEMPLATE_FILE>
+          template: ./templates/s3Bucket.yaml
           parameter-overrides: >-
             BucketName=${{ inputs.bucket_name }},
             BucketAcl=${{ inputs.bucket_acl }}
