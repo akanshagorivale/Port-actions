@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation Template for Lambda Function
+
+Parameters:
+  FunctionName:
+    Description: Name for the Lambda function
+    Type: String
+    MinLength: 1
+    MaxLength: 64
+    ConstraintDescription: The function name must be between 1 and 64 characters.
+
+  Runtime:
+    Description: Runtime for the Lambda function
+    Type: String
+    Default: python3.8
+    ConstraintDescription: Must be a valid Lambda runtime.
+
+  Handler:
+    Description: Lambda function handler
+    Type: String
+    ConstraintDescription: Must be a valid Lambda function handler.
+
+  RoleArn:
+    Description: ARN of the Lambda execution role
+    Type: String
+    ConstraintDescription: Must be a valid ARN.
+
+Resources:
+  LambdaFunction:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      FunctionName: !Ref FunctionName
+      Runtime: !Ref Runtime
+      Handler: !Ref Handler
+      Role: !Ref RoleArn
+
+Outputs:
+  LambdaFunctionArn:
+    Description: ARN of the created Lambda function
+    Value: !GetAtt LambdaFunction.Arn
+

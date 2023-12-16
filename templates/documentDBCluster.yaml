@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation Template for DocumentDB Cluster
+
+Parameters:
+  ClusterName:
+    Description: Name for the DocumentDB cluster
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    ConstraintDescription: The cluster name must be between 1 and 255 characters.
+
+  InstanceCount:
+    Description: Number of DocumentDB instances
+    Type: Number
+    Default: 1
+    MinValue: 1
+    MaxValue: 10
+    ConstraintDescription: Instance count must be between 1 and 10.
+
+Resources:
+  DocumentDBCluster:
+    Type: "AWS::DocDB::DBCluster"
+    Properties:
+      DBClusterIdentifier: !Ref ClusterName
+      EngineVersion: "4.0"
+      MasterUsername: admin
+      MasterUserPassword: adminadmin
+      AvailabilityZones: !GetAZs ""
+
+Outputs:
+  DocumentDBClusterIdentifier:
+    Description: Identifier of the created DocumentDB cluster
+    Value: !Ref DocumentDBCluster
+

@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation Template for ECS Cluster
+
+Parameters:
+  ClusterName:
+    Description: Name for the ECS cluster
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    ConstraintDescription: The cluster name must be between 1 and 255 characters.
+
+Resources:
+  ECSCluster:
+    Type: "AWS::ECS::Cluster"
+    Properties:
+      ClusterName: !Ref ClusterName
+
+Outputs:
+  ECSClusterName:
+    Description: Name of the created ECS cluster
+    Value: !Ref ECSCluster
+
