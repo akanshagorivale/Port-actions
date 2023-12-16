@@ -7,10 +7,10 @@ on:
         required: true
         type: string
         description: DocumentDB cluster name
-      instance_count:
+      number_of_instances:
         required: true
         type: number
-        description: Number of DocumentDB instances
+        description: Number of instances in the cluster
       master_username:
         required: true
         type: string
