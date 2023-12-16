@@ -55,7 +55,16 @@ Resources:
         - Key: Name
           Value: !Ref ClusterName
 
+  EC2ContainerInstance:
+    Type: AWS::ECS::ContainerInstance
+    Properties:
+      Cluster: !Ref ECSCluster
+      InstanceType: !Ref InstanceType
+
 Outputs:
-  ECSInstanceID:
+  ECSClusterName:
+    Description: Name of the created ECS cluster
+    Value: !Ref ECSCluster
+  EC2InstanceID:
     Description: ID of the created EC2 instance
     Value: !Ref EC2Instance
