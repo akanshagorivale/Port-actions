@@ -59,7 +59,8 @@ Resources:
       MinSize: 1
       MaxSize: 3  # Specify the desired min and max instances
       DesiredCapacity: 2
-      VPCZoneIdentifier: !Ref SubnetId
+      VPCZoneIdentifier: 
+        - !Ref SubnetId
 
 Outputs:
   ECSClusterName:
