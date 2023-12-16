@@ -14,11 +14,15 @@ on:
       master_username:
         required: true
         type: string
-        description: DocumentDB cluster name
+        description: DocumentDB cluster username
       master_user_password:
         required: true
         type: string
-        description: DocumentDB cluster name
+        description: DocumentDB cluster password
+      db_instance_class:
+        required: true
+        type: string
+        description: DocumentDB cluster instance class
       port_payload:
         required: true
         description: Port's payload, including details for who triggered the action and general context (blueprint, run id, etc...)
@@ -47,7 +51,8 @@ jobs:
             ClusterName=${{ inputs.cluster_name }},
             NumberOfInstances=${{ inputs.number_of_instances }},
             MasterUsername=${{ inputs.master_username }},
-            MasterUserPassword=${{ inputs.master_user_password }}
+            MasterUserPassword=${{ inputs.master_user_password }},
+            DBInstanceClass=${{ inputs.db_instance_class }}
 
       - name: UPSERT DocumentDB Cluster Entity in Port
         uses: port-labs/port-github-action@v1
@@ -62,7 +67,8 @@ jobs:
               "cluster_name": "${{ inputs.cluster_name }}",
               "number_of_instances": "${{ inputs.number_of_instances }}",
               "master_username": "${{ inputs.master_username }}",
-              "master_user_password": "${{ inputs.master_user_password }}"
+              "master_user_password": "${{ inputs.master_user_password }}",
+              "db_instance_class": "${{ inputs.db_instance_class }}"
             }
           relations: "{}"
           clientId: ${{ secrets.PORT_CLIENT_ID }}
