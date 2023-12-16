@@ -45,7 +45,7 @@ jobs:
           template: ./templates/documentDBCluster.yaml
           parameter-overrides: >-
             ClusterName=${{ inputs.cluster_name }},
-            InstanceCount=${{ inputs.instance_count }},
+            NumberOfInstances=${{ inputs.number_of_instances }},
             MasterUsername=${{ inputs.master_username }},
             MasterUserPassword=${{ inputs.master_user_password }}
 
@@ -60,7 +60,7 @@ jobs:
           properties: |-
             {
               "cluster_name": "${{ inputs.cluster_name }}",
-              "instance_count": "${{ inputs.instance_count }}",
+              "number_of_instances": "${{ inputs.number_of_instances }}",
               "master_username": "${{ inputs.master_username }}",
               "master_user_password": "${{ inputs.master_user_password }}"
             }
