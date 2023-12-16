@@ -51,7 +51,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: ${{ inputs.instance_name }}
-          template: ./templates/cloudFormation.yaml
+          template: ./templates/ec2Instance.yaml
           parameter-overrides: >-
             InstanceName=${{ inputs.instance_name }},
             InstanceType=${{ inputs.instance_type }},
