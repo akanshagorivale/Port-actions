@@ -42,7 +42,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy VPC Stack
-        run: aws cloudformation deploy --template-file templates/vpcWithComponents.yaml --stack-name VPCStack --parameter-overrides VpcCidrBlock=${{ inputs.vpc_cidr_block }}
+        run: aws cloudformation deploy --template-file templates/vpcWithComponents.yaml --stack-name VPCStack --parameter-overrides VpcCidrBlock=${{ inputs.vpc_cidr_block }}, PublicSubnetCidrBlock=${{ inputs.public_subnet_cidr_block }}, PrivateSubnetCidrBlock=${{ inputs.private_subnet_cidr_block }}, PeerVpcId=${{ inputs.peer_vpc_id }}
 
       - name: UPSERT VPC Stack Entity in Port
         uses: port-labs/port-github-action@v1
