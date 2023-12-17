@@ -7,6 +7,18 @@ on:
         required: true
         type: string
         description: VPC CIDR block
+      public_subnet_cidr_block:
+        required: true
+        type: string
+        description: Public Subnet CIDR block
+      private_subnet_cidr_block:
+        required: true
+        type: string
+        description: Private Subnet CIDR block
+      peer_vpc_id:
+        required: true
+        type: string
+        description: Peer VPC ID
       port_payload:
         required: true
         description:
@@ -42,7 +54,10 @@ jobs:
           blueprint: vpc_stack
           properties: |-
             {
-              "vpc_cidr_block": "${{ inputs.vpc_cidr_block }}"
+              "vpc_cidr_block": "${{ inputs.vpc_cidr_block }}",
+              "public_subnet_cidr_block": "${{ inputs.public_subnet_cidr_block }}",
+              "private_subnet_cidr_block": "${{ inputs.private_subnet_cidr_block }}"
+              "peer_vpc_id": "${{ inputs.peer_vpc_id }}"
             }
           relations: "{}"
           clientId: ${{ secrets.PORT_CLIENT_ID }}
