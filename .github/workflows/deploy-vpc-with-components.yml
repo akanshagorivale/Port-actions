@@ -24,4 +24,4 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy VPC Stack
-        run: aws cloudformation deploy --template-file templates/vpc-with-components.yaml --stack-name MyVPCStack --parameter-overrides VpcCidrBlock=${{ inputs.vpc_cidr_block }}
+        run: aws cloudformation deploy --template-file templates/vpcWithComponents.yaml --stack-name VPCStack --parameter-overrides VpcCidrBlock=${{ inputs.vpc_cidr_block }}
