@@ -25,3 +25,21 @@ jobs:
 
       - name: Deploy VPC Stack
         run: aws cloudformation deploy --template-file templates/vpcWithComponents.yaml --stack-name VPCStack --parameter-overrides VpcCidrBlock=${{ inputs.vpc_cidr_block }}
+
+      - name: UPSERT VPC Stack Entity in Port
+        uses: port-labs/port-github-action@v1
+        with:
+          identifier: ${{ inputs.vpc_cidr_block }}
+          title: ${{ inputs.vpc_cidr_block }}
+          team: "[]"
+          icon: VPC
+          blueprint: vpc_stack
+          properties: |-
+            {
+              "vpc_cidr_block": "${{ inputs.vpc_cidr_block }}"
+            }
+          relations: "{}"
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: UPSERT
+          runId: ${{fromJson(inputs.port_payload).context.runId}}
