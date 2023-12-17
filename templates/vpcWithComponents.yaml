@@ -22,7 +22,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      CidrBlock: "172.26.0.0/22"
+      CidrBlock: !Ref PublicSubnetCidrBlock
       AvailabilityZone: "ap-southeast-1a"
       MapPublicIpOnLaunch: true
       Tags:
@@ -33,7 +33,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      CidrBlock: "172.26.4.0/22"
+      CidrBlock: !Ref PrivateSubnetCidrBlock
       AvailabilityZone: "ap-southeast-1b"
       Tags:
         - Key: Name
@@ -125,7 +125,7 @@ Resources:
   VpcPeeringConnection:
     Type: AWS::EC2::VPCPeeringConnection
     Properties:
-      PeerVpcId: vpc-08e2313c10e6628ff  # Replace with the ID of the peer VPC
+      PeerVpcId: !Ref PeerVpcId  # Replace with the ID of the peer VPC
       VpcId: !Ref VPC
       Tags:
         - Key: Name
