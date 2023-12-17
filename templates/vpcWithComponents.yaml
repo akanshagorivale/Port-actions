@@ -7,16 +7,16 @@ Parameters:
     Type: String
     Default: "172.26.0.0/16"
   PublicSubnetCidrBlock:
-    Description: CIDR block for the VPC
+    Description: CIDR block for the public subnet
     Type: String
     Default: "172.26.0.0/22"
   PrivateSubnetCidrBlock:
-    Description: CIDR block for the VPC
+    Description: CIDR block for the private subnet
     Type: String
     Default: "172.26.4.0/22"
   PeerVpcId:
-    Description: CIDR block for the VPC
-    Type: String  
+    Description: ID of the peer VPC
+    Type: String
 
 Resources:
   VPC:
@@ -136,7 +136,7 @@ Resources:
   VpcPeeringConnection:
     Type: AWS::EC2::VPCPeeringConnection
     Properties:
-      PeerVpcId: !Ref PeerVpcId  # Replace with the ID of the peer VPC
+      PeerVpcId: !Ref PeerVpcId
       VpcId: !Ref VPC
       Tags:
         - Key: Name
