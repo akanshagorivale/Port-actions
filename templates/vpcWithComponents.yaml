@@ -5,10 +5,10 @@ Parameters:
   VpcCidrBlock:
     Description: CIDR block for the VPC
     Type: String
-    Default: "10.0.0.0/16"
+    Default: "172.26.0.0/16"
 
 Resources:
-  MyVPC:
+  VPC:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: !Ref VpcCidrBlock
@@ -16,14 +16,14 @@ Resources:
       EnableDnsHostnames: true
       Tags:
         - Key: Name
-          Value: MyVPC
+          Value: VPC
 
   PublicSubnet:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref MyVPC
-      CidrBlock: "10.0.0.0/24"
-      AvailabilityZone: "us-east-1a"
+      VpcId: !Ref VPC
+      CidrBlock: "172.26.0.0/22"
+      AvailabilityZone: "ap-southeast-1a"
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
@@ -32,9 +32,9 @@ Resources:
   PrivateSubnet:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref MyVPC
-      CidrBlock: "10.0.1.0/24"
-      AvailabilityZone: "us-east-1b"
+      VpcId: !Ref VPC
+      CidrBlock: "172.26.4.0/22"
+      AvailabilityZone: "ap-southeast-1b"
       Tags:
         - Key: Name
           Value: PrivateSubnet
@@ -49,13 +49,13 @@ Resources:
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
-      VpcId: !Ref MyVPC
+      VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
 
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref MyVPC
+      VpcId: !Ref VPC
       Tags:
         - Key: Name
           Value: PublicRouteTable
@@ -82,7 +82,7 @@ Resources:
   PrivateRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref MyVPC
+      VpcId: !Ref VPC
       Tags:
         - Key: Name
           Value: PrivateRouteTable
@@ -97,10 +97,10 @@ Resources:
   Nacl:
     Type: AWS::EC2::NetworkAcl
     Properties:
-      VpcId: !Ref MyVPC
+      VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: MyNACL
+          Value: NACL
 
   InboundRule:
     Type: AWS::EC2::NetworkAclEntry
@@ -125,8 +125,8 @@ Resources:
   VpcPeeringConnection:
     Type: AWS::EC2::VPCPeeringConnection
     Properties:
-      PeerVpcId: <PeerVpcId>  # Replace with the ID of the peer VPC
-      VpcId: !Ref MyVPC
+      PeerVpcId: vpc-08e2313c10e6628ff  # Replace with the ID of the peer VPC
+      VpcId: !Ref VPC
       Tags:
         - Key: Name
           Value: VPCPeeringConnection
