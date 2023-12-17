@@ -6,6 +6,17 @@ Parameters:
     Description: CIDR block for the VPC
     Type: String
     Default: "172.26.0.0/16"
+  PublicSubnetCidrBlock:
+    Description: CIDR block for the VPC
+    Type: String
+    Default: "172.26.0.0/22"
+  PrivateSubnetCidrBlock:
+    Description: CIDR block for the VPC
+    Type: String
+    Default: "172.26.4.0/22"
+  PeerVpcId:
+    Description: CIDR block for the VPC
+    Type: String  
 
 Resources:
   VPC:
