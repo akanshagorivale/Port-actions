@@ -7,6 +7,12 @@ on:
         required: true
         type: string
         description: VPC CIDR block
+      port_payload:
+        required: true
+        description:
+          Port's payload, including details for who triggered the action and
+          general context (blueprint, run id, etc...)
+        type: string
 
 jobs:
   deploy-vpc-stack:
