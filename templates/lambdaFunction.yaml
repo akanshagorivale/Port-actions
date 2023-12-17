@@ -1,41 +1,47 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Description: CloudFormation Template for Lambda Function
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Lambda Function and IAM Role
 
 Parameters:
-  FunctionName:
+  LambdaFunctionName:
+    Type: String
     Description: Name for the Lambda function
-    Type: String
-    MinLength: 1
-    MaxLength: 64
-    ConstraintDescription: The function name must be between 1 and 64 characters.
-
-  Runtime:
-    Description: Runtime for the Lambda function
-    Type: String
-    Default: python3.8
-    ConstraintDescription: Must be a valid Lambda runtime.
-
-  Handler:
-    Description: Lambda function handler
-    Type: String
-    ConstraintDescription: Must be a valid Lambda function handler.
-
-  RoleArn:
-    Description: ARN of the Lambda execution role
-    Type: String
-    ConstraintDescription: Must be a valid ARN.
 
 Resources:
-  LambdaFunction:
-    Type: "AWS::Lambda::Function"
+  LambdaRole:
+    Type: 'AWS::IAM::Role'
     Properties:
-      FunctionName: !Ref FunctionName
-      Runtime: !Ref Runtime
-      Handler: !Ref Handler
-      Role: !Ref RoleArn
+      RoleName: !Sub '${LambdaFunctionName}-Role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaBasicExecutionPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: '*'
+
+  LambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Runtime: nodejs14.x
+      Handler: index.handler
+      Role: !GetAtt LambdaRole.Arn
+      Code:
+        S3Bucket: your-s3-bucket-name
+        S3Key: path/to/your/lambda-code.zip
 
 Outputs:
   LambdaFunctionArn:
-    Description: ARN of the created Lambda function
     Value: !GetAtt LambdaFunction.Arn
-
+    Description: ARN of the created Lambda function
