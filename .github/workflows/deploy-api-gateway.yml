@@ -1,21 +1,51 @@
-name: Deploy VPC
+name: Deploy API Gateway
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      api_name:
+        required: true
+        type: string
+        description: api name
+      port_payload:
+        required: true
+        description:
+          Port's payload, including details for who triggered the action and
+          general context (blueprint, run id, etc...)
+        type: string
 
 jobs:
-  deploy:
+  deploy-api:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Deploy VPC
-      uses: aws-actions/aws-cloudformation-deploy@v2
-      with:
-        stack-name: MyVPCStack
-        region: us-east-1
-        template: ./templates/vpc.yaml
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy API Gateway
+        run: aws cloudformation deploy --template-file ./templates/apiGateway.yaml --stack-name ApiStack --capabilities CAPABILITY_IAM
+
+      - name: UPSERT API Gateway Entity in Port
+        uses: port-labs/port-github-action@v1
+        with:
+          identifier: ${{ inputs.api_name }}
+          title: ${{ inputs.api_name }}
+          team: "[]"
+          icon: EC2
+          blueprint: ec2_instance
+          properties: |-
+            {
+              "api_name": "${{ inputs.api_name }}"
+            }
+          relations: "{}"
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: UPSERT
+          runId: ${{fromJson(inputs.port_payload).context.runId}}
