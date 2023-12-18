@@ -1,9 +1,22 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Description: API Gateway Stack
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'API Gateway REST API'
+
+Parameters:
+  ApiName:
+    Type: String
+    Description: 'Name for the API Gateway REST API'
+    MinLength: 1
+    MaxLength: 128
+    Default: MyApi
 
 Resources:
   MyApi:
-    Type: AWS::ApiGateway::RestApi
+    Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      Name: MyApi
-      FailOnWarnings: "true"
+      Name: !Ref ApiName
+      FailOnWarnings: 'true'
+
+Outputs:
+  ApiId:
+    Description: 'ID of the API Gateway REST API'
+    Value: !Ref MyApi
