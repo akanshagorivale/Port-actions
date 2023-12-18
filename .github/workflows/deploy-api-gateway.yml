@@ -7,6 +7,10 @@ on:
         required: true
         type: string
         description: api name
+      swagger_definition:
+        type: String
+        description: Swagger JSON definition for the API Gateway
+        default: '{}'
       port_payload:
         required: true
         description:
@@ -30,7 +34,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy API Gateway
-        run: aws cloudformation deploy --template-file ./templates/apiGateway.yaml --stack-name ApiStack --capabilities CAPABILITY_IAM
+        run: aws cloudformation deploy --template-file ./templates/apiGateway.yaml --stack-name ApiStack --capabilities CAPABILITY_IAM --parameter-overrides APIName=${{ inputs.api_name }} SwaggerDefinition=${{ inputs.swagger_definition }}
 
       - name: UPSERT API Gateway Entity in Port
         uses: port-labs/port-github-action@v1
