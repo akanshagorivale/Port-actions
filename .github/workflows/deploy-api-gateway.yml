@@ -46,7 +46,8 @@ jobs:
           blueprint: api_gateway
           properties: |-
             {
-              "api_name": "${{ inputs.api_name }}"
+              "api_name": "${{ inputs.api_name }}",
+              "swagger_definition": "${{ inputs.swagger_definition }}"
             }
           relations: "{}"
           clientId: ${{ secrets.PORT_CLIENT_ID }}
