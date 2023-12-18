@@ -54,7 +54,7 @@ Resources:
           sudo amazon-linux-extras install docker -y
           sudo amazon-linux-extras install -y ecs; sudo systemctl enable --now --no-block ecs.service
           sleep 10
-          echo "ECS_CLUSTER=ecs_cluster" | sudo tee /etc/ecs/ecs.config
+          echo "ECS_CLUSTER=testcluster" | sudo tee /etc/ecs/ecs.config
           sudo sed -i '/After=cloud-final.service/d' /usr/lib/systemd/system/ecs.service
           sudo systemctl daemon-reload
           sudo sed -i '/After=cloud-final.service/d' /usr/lib/systemd/system/ecs.service
