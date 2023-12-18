@@ -39,7 +39,7 @@ jobs:
           title: ${{ inputs.api_name }}
           team: "[]"
           icon: EC2
-          blueprint: ec2_instance
+          blueprint: api_gateway
           properties: |-
             {
               "api_name": "${{ inputs.api_name }}"
