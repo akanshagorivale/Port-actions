@@ -7,7 +7,11 @@ Parameters:
     Description: 'Name for the API Gateway REST API'
     MinLength: 1
     MaxLength: 128
-    Default: MyApi
+    Default: Api
+  SwaggerDefinition:
+    Type: String
+    Description: 'Swagger JSON definition for the API Gateway'
+    Default: '{}'
 
 Resources:
   MyApi:
@@ -15,8 +19,9 @@ Resources:
     Properties:
       Name: !Ref ApiName
       FailOnWarnings: 'true'
+      Body: !Ref SwaggerDefinition
 
 Outputs:
   ApiId:
     Description: 'ID of the API Gateway REST API'
-    Value: !Ref MyApi
+    Value: !Ref Api
