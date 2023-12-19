@@ -79,6 +79,8 @@ Resources:
         MaxBatchSize: 1
         PauseTime: PT5M  # Pause for 5 minutes between batches
         WaitOnResourceSignals: true
+    TerminationPolicies:
+      - OldestInstance
 
   CapacityProvider:
     Type: AWS::ECS::CapacityProvider
