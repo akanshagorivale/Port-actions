@@ -42,14 +42,14 @@ Resources:
   LaunchConfiguration:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      ImageId: !Ref ImageId  # Amazon Linux 2 AMI, replace with your desired AMI
+      ImageId: !Ref ImageId
       InstanceType: !Ref InstanceType
-      KeyName: node-key-pair  # Specify the key pair name
+      KeyName: node-key-pair
       SecurityGroups: !Ref SecurityGroupIds
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          #echo ECS_CLUSTER=testcluster >> /etc/ecs/ecs.config
+          # echo ECS_CLUSTER=testcluster >> /etc/ecs/ecs.config
           sudo amazon-linux-extras disable docker
           sudo amazon-linux-extras install docker -y
           sudo amazon-linux-extras install -y ecs; sudo systemctl enable --now --no-block ecs.service
@@ -67,20 +67,18 @@ Resources:
       AutoScalingGroupName: EC2AutoScalingGroup
       LaunchConfigurationName: !Ref LaunchConfiguration
       MinSize: 1
-      MaxSize: 3  # Specify the desired min and max instances
+      MaxSize: 3
       DesiredCapacity: 1
-      VPCZoneIdentifier: 
+      VPCZoneIdentifier:
         - !Ref SubnetId
       HealthCheckType: EC2
       HealthCheckGracePeriod: 300
-    UpdatePolicy:
-      AutoScalingRollingUpdate:
-        MinInstancesInService: 1
-        MaxBatchSize: 1
-        PauseTime: PT5M  # Pause for 5 minutes between batches
-        WaitOnResourceSignals: true
-    TerminationPolicies:
-      - OldestInstance
+      UpdatePolicy:
+        AutoScalingRollingUpdate:
+          MinInstancesInService: 1
+          MaxBatchSize: 1
+          PauseTime: PT5M  # Pause for 5 minutes between batches
+          WaitOnResourceSignals: true
 
   CapacityProvider:
     Type: AWS::ECS::CapacityProvider
@@ -96,7 +94,7 @@ Resources:
           TargetCapacity: 100
         ManagedTerminationProtection: ENABLED
 
-  # Create a cluster capacity provider assocation so that the cluster
+  # Create a cluster capacity provider association so that the cluster
   # will use the capacity provider
   CapacityProviderAssociation:
     Type: AWS::ECS::ClusterCapacityProviderAssociations
@@ -116,3 +114,4 @@ Outputs:
   ECSAutoScalingGroup:
     Description: Auto Scaling Group for ECS Cluster
     Value: !Ref AutoScalingGroup
+
