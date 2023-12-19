@@ -73,6 +73,7 @@ Resources:
         - !Ref SubnetId
       HealthCheckType: EC2
       HealthCheckGracePeriod: 300
+      InstanceProtection: true  # Add this line
 
   CapacityProvider:
     Type: AWS::ECS::CapacityProvider
