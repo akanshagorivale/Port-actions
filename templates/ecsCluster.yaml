@@ -73,7 +73,12 @@ Resources:
         - !Ref SubnetId
       HealthCheckType: EC2
       HealthCheckGracePeriod: 300
-      InstanceProtection: true  # Enable instance protection
+      UpdatePolicy:
+      AutoScalingRollingUpdate:
+        MinInstancesInService: 1
+        MaxBatchSize: 1
+        PauseTime: PT5M  # Pause for 5 minutes between batches
+        WaitOnResourceSignals: true
 
   CapacityProvider:
     Type: AWS::ECS::CapacityProvider
