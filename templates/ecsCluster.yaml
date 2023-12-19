@@ -71,6 +71,9 @@ Resources:
       DesiredCapacity: 1
       VPCZoneIdentifier: 
         - !Ref SubnetId
+      HealthCheckType: EC2
+      HealthCheckGracePeriod: 300
+      InstanceProtection: true  # Enable instance protection
 
   CapacityProvider:
     Type: AWS::ECS::CapacityProvider
