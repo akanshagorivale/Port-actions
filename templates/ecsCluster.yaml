@@ -73,7 +73,6 @@ Resources:
         - !Ref SubnetId
       HealthCheckType: EC2
       HealthCheckGracePeriod: 300
-      ProtectFromScaleIn: true  # Add this line
 
   CapacityProvider:
     Type: AWS::ECS::CapacityProvider
