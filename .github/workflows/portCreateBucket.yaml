@@ -2,6 +2,15 @@ name: Create S3 Bucket
 
 on:
   workflow_dispatch:
+    inputs:
+      name:
+        type: string
+      visibility:
+        type: string
+      port_payload:
+        required: true
+        description: Port's payload, including details for who triggered the action and general context
+        type: string
   pull_request:
     branches:
       - main
