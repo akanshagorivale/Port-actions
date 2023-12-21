@@ -63,7 +63,7 @@ jobs:
       - name: Modify Terraform Configuration
         run: |
           # Add your commands to modify the Terraform configuration file here
-          sed -i 's/some_old_value/some_new_value/' ./targetRepo/resources/${{ inputs.name }}.tf
+          sed -i 's/test/newtest/' ./targetRepo/resources/${{ inputs.name }}.tf
 
       - name: Commit and push changes
         run: |
