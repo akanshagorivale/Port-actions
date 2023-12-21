@@ -1,9 +1,28 @@
 name: Deploy Application Stack
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      vpc_id:
+        required: true
+        type: string
+        description: api name
+      dynamodb_table:
+        type: String
+        description: Swagger JSON definition for the API Gateway
+        default: '{}'
+      s3_bucket:
+        type: String
+        description: Swagger JSON definition for the API Gateway
+      lambda_function:
+        type: String
+        description: Swagger JSON definition for the API Gateway
+      port_payload:
+        required: true
+        description:
+          Port's payload, including details for who triggered the action and
+          general context (blueprint, run id, etc...)
+        type: string
 
 jobs:
   deploy:
@@ -30,3 +49,24 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve --template-file ./templates/application-stack.tf 
+
+      - name: UPSERT API Gateway Entity in Port
+        uses: port-labs/port-github-action@v1
+        with:
+          identifier: ${{ inputs.vpc_id }}
+          title: ${{ inputs.vpc_id }}
+          team: "[]"
+          icon: EC2
+          blueprint: api_gateway
+          properties: |-
+            {
+              "vpc_id": "${{ inputs.vpc_id }}",
+              "dynamodb_table": "${{ inputs.dynamodb_table }}"
+              "s3_bucket": "${{ inputs.s3_bucket }}"
+              "lambda_function": "${{ inputs.lambda_function }}"
+            }
+          relations: "{}"
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: UPSERT
+          runId: ${{fromJson(inputs.port_payload).context.runId}}
