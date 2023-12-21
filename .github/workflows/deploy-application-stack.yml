@@ -35,23 +35,23 @@ jobs:
       - name: Copy template file
         run: |
           mkdir -p ./resources
-          cp templates/cloudResource.tf ./resources/${{ inputs.name }}.tf
+          cp templates/application-stack.tf ./resources/${{ inputs.name }}.tf
       - name: Update new file data
         run: |
-          sed -i 's/{{ bucket_name }}/${{ inputs.name }}/' ./resources/${{ inputs.name }}.tf
-          sed -i 's/{{ bucket_acl }}/${{ inputs.visibility }}/' ./resources/${{ inputs.name }}.tf
+          sed -i 's/{{ vpc_id }}/${{ inputs.vpc_id }}/' ./resources/${{ inputs.vpc_id }}.tf
+          sed -i 's/{{ vpc_id }}/${{ inputs.vpc_id }}/' ./resources/${{ inputs.vpc_id }}.tf
       - name: Open a pull request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.ORG_ADMIN_TOKEN }}
-          commit-message: Create new resource - ${{ inputs.name }}
+          commit-message: Create new resource - ${{ inputs.vpc_id }}
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          branch: new-resource-${{ inputs.name }}
+          branch: new-resource-${{ inputs.vpc_id }}
           delete-branch: true
-          title: Create new resource - ${{ inputs.name }}
+          title: Create new resource - ${{ inputs.vpc_id }}
           body: |
-            Create new ${{ inputs.visibility }} resource - ${{ inputs.name }}
+            Create new ${{ inputs.visibility }} resource - ${{ inputs.vpc_id }}
           draft: false
 
   create-entity-in-port-and-update-run:
@@ -78,4 +78,4 @@ jobs:
           clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
           operation: PATCH_RUN
           runId: ${{fromJson(inputs.port_payload).context.runId}}
-          logMessage: Pull request created successfully for "${{ inputs.name }}" 🚀
+          logMessage: Pull request created successfully for "${{ inputs.vpc_id }}" 🚀
