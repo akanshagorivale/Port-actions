@@ -48,7 +48,7 @@ jobs:
         run: terraform init
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve --template-file ./templates/application-stack.tf 
+        run: terraform apply -auto-approve -var-file ./templates/application-stack.tf 
 
       - name: UPSERT API Gateway Entity in Port
         uses: port-labs/port-github-action@v1
