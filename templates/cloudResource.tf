@@ -207,6 +207,71 @@ resource "aws_security_group" "lambda_sg" {
   }
 }
 
+resource "aws_iam_role" "lambda-function-role" {
+  name = "lambda-function-role"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      { Sid = "",
+        "Effect" : "Allow",
+        "Principal" : {
+
+          "Service" : [
+            
+           "lambda.amazonaws.com"
+          ]
+       },
+        "Action" : "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+
+resource "aws_iam_policy" "policy2" {
+  name        = "lambda-policy"
+  description = "lambda-policy"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:ListFunctions",
+                "lambda:ListEventSourceMappings",
+                "lambda:ListLayerVersions",
+                "lambda:ListLayers",
+                "lambda:GetAccountSettings",
+                "lambda:CreateEventSourceMapping",
+                "lambda:ListCodeSigningConfigs",
+                "lambda:CreateCodeSigningConfig",
+                "lambda:InvokeFunction"
+            ],
+            "Resource": "*"
+        },
+        {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:CreateNetworkInterface",
+        "ec2:DeleteNetworkInterface",
+        "ec2:DescribeInstances",
+        "ec2:AttachNetworkInterface"
+      ],
+      "Resource": "*"
+    }
+    ]
+}
+EOF
+}
+resource "aws_iam_role_policy_attachment" "role_attach2" {
+  role       = aws_iam_role.lambda-function-role.name
+  policy_arn = aws_iam_policy.policy2.arn
+}
+
 resource "aws_lambda_function" "lambda-function" {
   architectures = ["x86_64"]
   description   = "An Amazon SQS trigger that logs messages in a queue."
@@ -221,7 +286,7 @@ resource "aws_lambda_function" "lambda-function" {
   memory_size                    = "128"
   package_type                   = "Zip"
   reserved_concurrent_executions = "-1"
-  role                           = "arn:aws:iam::660969952193:role/okta-role"
+  role                           = aws_iam_role.lambda-function-role.arn
   runtime                        = "nodejs16.x"
 
   timeout = "3"
@@ -235,7 +300,7 @@ resource "aws_lambda_function" "lambda-function" {
     security_group_ids = [aws_security_group.lambda_sg.id]
   }
 
-#  depends_on = [aws_iam_role.lambda-to-opensearch-role]
+  depends_on = [aws_iam_role.lambda-function-role]
 }
 
 resource "aws_dynamodb_table" "basic-dynamodb-table" {
