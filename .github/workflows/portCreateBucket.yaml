@@ -1,12 +1,8 @@
-name: Create S3 Bucket
+name: Deploy Application Stack
 
 on:
   workflow_dispatch:
     inputs:
-      name:
-        type: string
-      visibility:
-        type: string
       port_payload:
         required: true
         description: Port's payload, including details for who triggered the action and general context
@@ -16,7 +12,7 @@ on:
       - main
 
 jobs:
-  createS3Bucket:
+  deployApplicationStack:
     runs-on: ubuntu-latest
 
     steps:
@@ -50,7 +46,7 @@ jobs:
 
   createEntityInPort:
     runs-on: ubuntu-latest
-    needs: createS3Bucket
+    needs: deployApplicationStack
 
     steps:
       - name: UPSERT Entity in Port
