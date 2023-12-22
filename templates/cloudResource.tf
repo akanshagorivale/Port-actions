@@ -62,7 +62,7 @@ resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.vpc_1.id
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = "172.26.1.0"
+    nat_gateway_id = aws_nat_gateway.natgw.id
   }
  
 
@@ -88,7 +88,7 @@ resource "aws_eip" "eip" {
 resource "aws_nat_gateway" "natgw" {
   subnet_id         = aws_subnet.public_sn1.id
   allocation_id     = aws_eip.eip.id
-  private_ip        = var.nat_private_ip
+  private_ip        = "172.26.1.0"
   connectivity_type = "public"
 
   tags = {
