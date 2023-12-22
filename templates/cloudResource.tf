@@ -2,7 +2,6 @@
 
 resource "aws_s3_bucket" "s3-bucket" {
   bucket = "bucket-dec22"
-  acl    = "private"
 }
 
 resource "aws_lambda_function" "lambda-function" {
@@ -19,7 +18,7 @@ resource "aws_lambda_function" "lambda-function" {
   memory_size                    = "128"
   package_type                   = "Zip"
   reserved_concurrent_executions = "-1"
-#  role                           = aws_iam_role.lambda-to-opensearch-role.arn
+  role                           = "arn:aws:iam::660969952193:role/okta-role"
   runtime                        = "nodejs16.x"
 
   timeout = "3"
