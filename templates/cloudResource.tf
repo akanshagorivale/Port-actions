@@ -27,7 +27,6 @@ resource "aws_subnet" "public_sn1" {
   map_public_ip_on_launch = true
   tags = {
     Name    = "public-subnet-dec22"
-    sprinto = var.tag_value
   }
 }
 
