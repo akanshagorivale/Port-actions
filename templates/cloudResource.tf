@@ -1,12 +1,5 @@
 # cloudResource.tf
 
-# Data Blocks ======================================
-# ==================================================
-data "aws_caller_identity" "acc-id" {}
-data "aws_region" "for_kms" {}
-# ==================================================
-
-
 resource "aws_vpc" "vpc_1" {
 
   cidr_block = var.vpc_cidr_block
