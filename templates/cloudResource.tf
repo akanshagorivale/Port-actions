@@ -2,7 +2,7 @@
 
 resource "aws_vpc" "vpc_1" {
 
-  cidr_block = "172.26.0.0/16"
+  cidr_block = var.vpc_cidr_block
   # enable_classiclink               = "false"
   # enable_classiclink_dns_support   = "false"
   enable_dns_hostnames = "true"
@@ -10,32 +10,32 @@ resource "aws_vpc" "vpc_1" {
   instance_tenancy     = "default"
 
   tags = {
-    Name    = "test-vpc-dec22"
+    Name    = "${var.environment}-vpc"
     
   }
 
   tags_all = {
-    Name    = "test-vpc-dec22"
+    Name    = "${var.environment}-vpc"
     
   }
 }
 
 resource "aws_subnet" "public_sn1" {
   vpc_id                  = aws_vpc.vpc_1.id
-  cidr_block              = "172.26.0.0/22"
+  cidr_block              = var.public_subnet1_cidr_block
   availability_zone       = "ap-southeast-1a"
   map_public_ip_on_launch = true
   tags = {
-    Name    = "public-subnet-dec22"
+    Name    = "${var.environment}-public-subnet"
   }
 }
 
 resource "aws_subnet" "private_sn1" {
   vpc_id            = aws_vpc.vpc_1.id
-  cidr_block        = "172.26.4.0/22"
+  cidr_block        = var.private_subnet1_cidr_block
   availability_zone = "ap-southeast-1a"
   tags = {
-    Name    = "private-subnet-dec22"
+    Name    = "${var.environment}-private-subnet"
 
   }
 }
@@ -51,7 +51,7 @@ resource "aws_route_table" "public_rt" {
   }
 
   tags = {
-    Name    = "public-route-table-dec22"
+    Name    = "${var.environment}-public-route-table"
 
   }
 }
@@ -67,7 +67,7 @@ resource "aws_route_table" "private_rt" {
  
 
   tags = {
-    Name    = "private-route-table-dec22"
+    Name    = "${var.environment}-private-route-table"
 
   }
 }
@@ -76,7 +76,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc_1.id
 
   tags = {
-    Name    = "igw-dec22"
+    Name    = "${var.environment}-internet-gateway"
 
   }
 }
@@ -88,11 +88,11 @@ resource "aws_eip" "eip" {
 resource "aws_nat_gateway" "natgw" {
   subnet_id         = aws_subnet.public_sn1.id
   allocation_id     = aws_eip.eip.id
-  private_ip        = "172.26.1.0"
+  private_ip        = var.nat_private_ip
   connectivity_type = "public"
 
   tags = {
-    Name    = "nat-gw-dec22"
+    Name    = "${var.environment}-nat-gateway"
 
   }
 }
@@ -132,7 +132,7 @@ resource "aws_network_acl" "public1-nacl" {
   }
 
   tags = {
-    Name    = "public-subnet-nacl-dec22"
+    Name    = "${var.environment}-public-subnet-nacl"
 
   }
 }
@@ -159,7 +159,7 @@ resource "aws_network_acl" "private1-nacl" {
   }
 
   tags = {
-    Name    = "private-subnet-nacl-dec22"
+    Name    = "${var.environment}-private-subnet-nacl"
 
   }
 }
@@ -180,11 +180,11 @@ resource "aws_network_acl_association" "private1-nacl" {
 
 
 resource "aws_s3_bucket" "s3-bucket" {
-  bucket = "s3-bucket-dec22"
+  bucket = "${var.environment}-bucket"
 }
 
 resource "aws_security_group" "lambda_sg" {
-  name        = "security-group-dec22"
+  name        = "${var.environment}-security-group"
   description = "Allow TLS inbound traffic"
   vpc_id      = aws_vpc.vpc_1.id
 
@@ -203,12 +203,12 @@ resource "aws_security_group" "lambda_sg" {
   }
 
   tags = {
-    Name    = "security-group-dec22"
+    Name    = "${var.environment}-security-group"
   }
 }
 
 resource "aws_iam_role" "lambda-function-role" {
-  name = "lambda-function-role"
+  name = "${var.environment}-lambda-function-role"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -228,8 +228,8 @@ resource "aws_iam_role" "lambda-function-role" {
 }
 
 
-resource "aws_iam_policy" "policy2" {
-  name        = "lambda-policy"
+resource "aws_iam_policy" "policy" {
+  name        = "${var.environment}-lambda-policy"
   description = "lambda-policy"
 
   policy = <<EOF
@@ -269,7 +269,7 @@ EOF
 }
 resource "aws_iam_role_policy_attachment" "role_attach2" {
   role       = aws_iam_role.lambda-function-role.name
-  policy_arn = aws_iam_policy.policy2.arn
+  policy_arn = aws_iam_policy.policy.arn
 }
 
 resource "aws_lambda_function" "lambda-function" {
@@ -280,7 +280,7 @@ resource "aws_lambda_function" "lambda-function" {
     size = "512"
   }
 
-  function_name                  = "test-function-dec22"
+  function_name                  = "${var.environment}-lambda-function"
   filename                       = "lambda_function.zip"
   handler                        = "index.handler"
   memory_size                    = "128"
@@ -304,7 +304,7 @@ resource "aws_lambda_function" "lambda-function" {
 }
 
 resource "aws_dynamodb_table" "basic-dynamodb-table" {
-  name           = "dynamodb-dec22"
+  name           = "${var.environment}-dynamodb"
   billing_mode   = "PROVISIONED"
   read_capacity  = 20
   write_capacity = 20
