@@ -53,7 +53,7 @@ jobs:
         uses: port-labs/port-github-action@v1
         with:
           identifier: ${{ github.repository_owner }}/my-s3-bucket
-          blueprint: service
+          blueprint: application_stacks
           properties: |-
             {
               "resource_definitions": "${{ github.server_url }}/${{ github.repository }}/${{ github.sha }}/main/"
