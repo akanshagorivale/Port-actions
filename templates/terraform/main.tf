@@ -180,7 +180,7 @@ resource "aws_network_acl_association" "private1-nacl" {
 
 
 resource "aws_s3_bucket" "s3-bucket" {
-  bucket = "${var.environment}-bucket"
+  bucket = "${var.environment}-bucket-1234"
 }
 
 resource "aws_security_group" "lambda_sg" {
