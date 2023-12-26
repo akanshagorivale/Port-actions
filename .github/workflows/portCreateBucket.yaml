@@ -42,7 +42,7 @@ jobs:
       - name: Terraform Apply
         run: |
           cd templates/terraform  # Change to the directory where your Terraform files are
-          terraform apply -auto-approve
+          terraform apply -auto-approve -var-file=test-terraform.tfvars
 
   createEntityInPort:
     runs-on: ubuntu-latest
