@@ -1,5 +1,0 @@
-vpc_cidr_block                        = "172.26.0.0/16"
-public_subnet1_cidr_block             = "172.26.0.0/22"
-private_subnet1_cidr_block      = "172.26.4.0/22"
-nat_private_ip                        = "172.26.1.0"
-environment                           = "sandbox"
