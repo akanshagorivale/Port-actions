@@ -62,11 +62,11 @@ jobs:
       - name: Set Terraform variables
         run: |
           cd templates/terraform  # Change to the directory where your Terraform files are
-          echo "vpc_cidr_block = ${{ secrets.VPC_CIDR_BLOCK }}" >> test-terraform.tfvars
-          echo "public_subnet_cidr_block = ${{ secrets.PUBLIC_SUBNET_CIDR_BLOCK }}" >> test-terraform.tfvars
-          echo "private_subnet_cidr_block = ${{ secrets.PRIVATE_SUBNET_CIDR_BLOCK }}" >> test-terraform.tfvars
-          echo "elastic_ip = ${{ secrets.ELASTIC_IP }}" >> test-terraform.tfvars
-          echo "environment = ${{ secrets.ENVIRONMENT }}" >> test-terraform.tfvars
+          echo "vpc_cidr_block = ${{ inputs.VPC_CIDR_BLOCK }}" >> test-terraform.tfvars
+          echo "public_subnet_cidr_block = ${{ inputs.PUBLIC_SUBNET_CIDR_BLOCK }}" >> test-terraform.tfvars
+          echo "private_subnet_cidr_block = ${{ inputs.PRIVATE_SUBNET_CIDR_BLOCK }}" >> test-terraform.tfvars
+          echo "elastic_ip = ${{ inputs.ELASTIC_IP }}" >> test-terraform.tfvars
+          echo "environment = ${{ inputs.ENVIRONMENT }}" >> test-terraform.tfvars
 
       - name: Terraform Apply
         run: |
