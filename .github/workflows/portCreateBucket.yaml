@@ -39,6 +39,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Configure GitHub Token
+        run: echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -62,16 +65,16 @@ jobs:
       - name: Set Terraform variables
         run: |
           cd templates/terraform  # Change to the directory where your Terraform files are
-          echo "vpc_cidr_block = ${{ inputs.VPC_CIDR_BLOCK }}" >> test-terraform.tfvars
-          echo "public_subnet_cidr_block = ${{ inputs.PUBLIC_SUBNET_CIDR_BLOCK }}" >> test-terraform.tfvars
-          echo "private_subnet_cidr_block = ${{ inputs.PRIVATE_SUBNET_CIDR_BLOCK }}" >> test-terraform.tfvars
-          echo "elastic_ip = ${{ inputs.ELASTIC_IP }}" >> test-terraform.tfvars
-          echo "environment = ${{ inputs.ENVIRONMENT }}" >> test-terraform.tfvars
+          echo "vpc_cidr_block = \"${{ github.event.inputs.vpc_cidr_block }}\"" > dynamic-terraform.tfvars
+          echo "public_subnet_cidr_block = \"${{ github.event.inputs.public_subnet_cidr_block }}\"" >> dynamic-terraform.tfvars
+          echo "private_subnet_cidr_block = \"${{ github.event.inputs.private_subnet_cidr_block }}\"" >> dynamic-terraform.tfvars
+          echo "elastic_ip = \"${{ github.event.inputs.elastic_ip }}\"" >> dynamic-terraform.tfvars
+          echo "environment = \"${{ github.event.inputs.environment }}\"" >> dynamic-terraform.tfvars
 
       - name: Terraform Apply
         run: |
           cd templates/terraform  # Change to the directory where your Terraform files are
-          terraform apply -auto-approve -var-file=test-terraform.tfvars
+          terraform apply -auto-approve -var-file=dynamic-terraform.tfvars
 
   createEntityInPort:
     runs-on: ubuntu-latest
@@ -86,11 +89,11 @@ jobs:
           properties: |-
             {
               "resource_definitions": "${{ github.server_url }}/${{ github.repository }}/${{ github.sha }}/main/",
-              "vpc_cidr_block": "${{ inputs.vpc_cidr_block }}",
-              "public_subnet_cidr_block": "${{ inputs.public_subnet_cidr_block }}",
-              "private_subnet_cidr_block": "${{ inputs.private_subnet_cidr_block }}",
-              "elastic_ip": "${{ inputs.elastic_ip }}",
-              "environment": "${{ inputs.environment }}"
+              "vpc_cidr_block": "${{ github.event.inputs.vpc_cidr_block }}",
+              "public_subnet_cidr_block": "${{ github.event.inputs.public_subnet_cidr_block }}",
+              "private_subnet_cidr_block": "${{ github.event.inputs.private_subnet_cidr_block }}",
+              "elastic_ip": "${{ github.event.inputs.elastic_ip }}",
+              "environment": "${{ github.event.inputs.environment }}"
             }
           clientId: ${{ secrets.PORT_CLIENT_ID }}
           clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
