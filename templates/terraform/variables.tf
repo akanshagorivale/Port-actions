@@ -17,3 +17,7 @@ variable "nat_private_ip" {
 variable "environment" {
   description = "Enviroment name"
 }
+
+variable "github_token" {
+  description = "Github token"
+}
