@@ -1,3 +1,36 @@
+provider "github" {
+  owner  = "akanshagorivale"
+  repo   = "Port-actions"
+  token  = var.github_token
+}
+
+data "github_actions_secret" "secret1" {
+  repository = "Port-actions"
+  secret_name = "vpc_cidr_block"
+}
+
+data "github_actions_secret" "secret2" {
+  repository = "Port-actions"
+  secret_name = "public_subnet_cidr_block"
+}
+
+data "github_actions_secret" "secret3" {
+  repository = "Port-actions"
+  secret_name = "private_subnet_cidr_block"
+}
+
+data "github_actions_secret" "secret4" {
+  repository = "Port-actions"
+  secret_name = "elastic_ip"
+}
+
+data "github_actions_secret" "secret5" {
+  repository = "Port-actions"
+  secret_name = "environment"
+}
+
+
+
 resource "aws_vpc" "vpc_1" {
 
   cidr_block = var.vpc_cidr_block
